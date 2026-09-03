@@ -1,0 +1,153 @@
+<!-- TikTok/tiktok_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Downloader — No Watermark HD</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+    <!-- Ambient Glow Background -->
+    <div class="ambient-glow" aria-hidden="true">
+        <div class="glow-orb orb-tiktok"></div>
+    </div>
+
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="{{ url_for('index') }}" class="brand-logo">
+                    <div class="brand-icon"><i class="fa-solid fa-arrow-down"></i></div>
+                    <span>Titanium<span style="color: var(--color-primary);">DL</span></span>
+                </a>
+                <a href="https://www.instagram.com/titanium_web27/" target="_blank" rel="noopener noreferrer" class="creator-badge" title="Visit Instagram profile">
+                    <i class="fa-brands fa-instagram"></i>
+                    <span>Made by <strong>Umer</strong></span>
+                </a>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item"><a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li class="nav-item"><a href="{{ url_for('tiktok_page') }}" class="active"><i class="fa-brands fa-tiktok"></i> TikTok</a></li>
+                    <li class="nav-item"><a href="{{ url_for('instagram_page') }}"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                    <li class="nav-item"><a href="{{ url_for('reddit_page') }}"><i class="fa-brands fa-reddit-alien"></i> Reddit</a></li>
+                    <li class="nav-item"><a href="{{ url_for('youtube_page') }}"><i class="fa-brands fa-youtube"></i> YouTube</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <div class="app-container">
+
+            <div class="hero-header">
+                <div class="badge-tag">
+                    <i class="fa-brands fa-tiktok" style="color: var(--c-tiktok-alt);"></i> TikTok Downloader
+                </div>
+                <h1 class="hero-title">Download TikTok Videos</h1>
+                <p class="hero-subtitle">
+                    Save TikTok videos in original HD quality without any watermark or blur.
+                </p>
+            </div>
+
+            <!-- Downloader Glass Box -->
+            <div class="downloader-box">
+                <form action="{{ url_for('download') }}" method="post" class="downloader-form" id="dlForm">
+                    <div class="input-label-row">
+                        <label for="video_link" class="input-label">Paste TikTok Video Link</label>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Supports standard & short links</span>
+                    </div>
+
+                    <div class="url-input-group">
+                        <i class="fa-brands fa-tiktok url-icon" style="color: var(--c-tiktok-alt);"></i>
+                        <input 
+                            type="url" 
+                            class="url-input-field" 
+                            id="video_link" 
+                            name="video_link" 
+                            placeholder="https://www.tiktok.com/@user/video/..." 
+                            required
+                            autocomplete="off"
+                        >
+                        <button type="button" class="paste-quick-btn" id="pasteBtn" title="Paste from clipboard">
+                            <i class="fa-regular fa-clipboard"></i> Paste
+                        </button>
+                    </div>
+
+                    <button type="submit" class="submit-download-btn btn-tiktok" id="submitBtn">
+                        <div class="spinner-icon" id="spinner"></div>
+                        <span id="btnLabel"><i class="fa-solid fa-cloud-arrow-down"></i> Download TikTok Video</span>
+                    </button>
+                </form>
+
+                {% if message %}
+                <div class="alert-feedback alert-danger" role="alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Highlights -->
+            <div class="feature-highlights">
+                <div class="feature-item">
+                    <i class="fa-solid fa-wand-magic-sparkles feature-item-icon" style="color: var(--c-tiktok);"></i>
+                    <h4>Zero Watermark</h4>
+                    <p>Clean video files without the bouncing TikTok logo.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-film feature-item-icon" style="color: var(--c-tiktok-alt);"></i>
+                    <h4>Full HD Quality</h4>
+                    <p>Highest available video stream resolution preserved.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-rotate-left feature-item-icon" style="color: var(--color-primary);"></i>
+                    <h4>Quick Switch</h4>
+                    <p><a href="{{ url_for('index') }}" style="color: var(--color-primary); text-decoration: underline;">Return to homepage</a> anytime.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>Personal use only. Respect copyright laws and creators' rights. &copy; 2026 Titanium Downloader.</p>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        const input = document.getElementById('video_link');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const dlForm = document.getElementById('dlForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+        const btnLabel = document.getElementById('btnLabel');
+
+        if (navigator.clipboard) {
+            pasteBtn.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text) input.value = text.trim();
+                } catch (e) {
+                    input.focus();
+                }
+            });
+        } else {
+            pasteBtn.style.display = 'none';
+        }
+
+        dlForm.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnLabel.innerHTML = 'Fetching TikTok Video... Please Wait';
+        });
+    </script>
+</body>
+</html>
